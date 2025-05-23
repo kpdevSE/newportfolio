@@ -14,12 +14,6 @@ import
 
 export default function AboutSection()
 {
-    const [isVisible, setIsVisible] = useState(false);
-    const [counters, setCounters] = useState({
-        experience: 0,
-        projects: 0,
-        clients: 0
-    });
     const sectionRef = useRef(null);
 
     const skills = [
@@ -51,56 +45,12 @@ export default function AboutSection()
 
     useEffect(() =>
     {
-        const observer = new IntersectionObserver(
-            ([entry]) =>
-            {
-                if (entry.isIntersecting && !isVisible)
-                {
-                    setIsVisible(true);
-
-                    // Animate counters
-                    const animateCounter = (target, key, duration = 2000) =>
-                    {
-                        let start = 0;
-                        const increment = target / (duration / 16);
-
-                        const updateCounter = () =>
-                        {
-                            start += increment;
-                            if (start < target)
-                            {
-                                setCounters(prev => ({ ...prev, [key]: Math.ceil(start) }));
-                                requestAnimationFrame(updateCounter);
-                            } else
-                            {
-                                setCounters(prev => ({ ...prev, [key]: target }));
-                            }
-                        };
-                        updateCounter();
-                    };
-
-                    setTimeout(() =>
-                    {
-                        animateCounter(4, 'experience');
-                        animateCounter(50, 'projects');
-                        animateCounter(25, 'clients');
-                    }, 500);
-                }
-            },
-            { threshold: 0.3 }
-        );
-
-        if (sectionRef.current)
-        {
-            observer.observe(sectionRef.current);
-        }
-
-        return () => observer.disconnect();
-    }, [isVisible]);
+        // No animations needed - static display only
+    }, []);
 
     return (
         <div>
-            <section ref={sectionRef} id="about" className="py-20 px-4 bg-gradient-to-br from-slate-50 via-white to-gray-50 relative overflow-hidden">
+            <section id="about" className="py-20 px-4 bg-gradient-to-br from-slate-50 via-white to-gray-50 relative overflow-hidden">
                 {/* Background decorations */}
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full opacity-60"></div>
@@ -138,8 +88,7 @@ export default function AboutSection()
                                     <div key={label} className="text-center p-4 bg-white/80 cursor-pointer backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100">
                                         <Icon className="h-6 w-6 text-gray-600 mx-auto mb-2 cursor-pointer" />
                                         <div className="text-2xl font-bold text-black cursor-pointer">
-                                            {index === 0 ? counters.experience :
-                                                index === 1 ? counters.projects : counters.clients}{suffix}
+                                            {value}{suffix}
                                         </div>
                                         <div className="text-xs text-gray-500 font-medium cursor-pointer">{label}</div>
                                     </div>

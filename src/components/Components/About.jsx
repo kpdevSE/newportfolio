@@ -232,7 +232,7 @@ export default function AboutSection()
                     </div>
                 </div>
 
-                <style >{`
+                {/* <style >{`
                     @keyframes fade-in-up {
                         from {
                             opacity: 0;
@@ -258,7 +258,7 @@ export default function AboutSection()
                     .delay-700 { animation-delay: 700ms; }
                     .delay-800 { animation-delay: 800ms; }
                     .delay-1000 { animation-delay: 1000ms; }
-                `}</style>
+                `}</style> */}
             </section>
         </div>
     );

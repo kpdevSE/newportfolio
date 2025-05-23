@@ -419,42 +419,44 @@ export default function FeaturedProjects()
                     {/* Dialog */}
                     <div className="relative w-full max-w-4xl max-h-[90vh] overflow-hidden bg-white dark:bg-slate-900 rounded-3xl shadow-2xl animate-in zoom-in-95 duration-500">
                         {/* Header */}
-                        <div className={`relative p-8 bg-gradient-to-br ${selectedProject.gradient} text-white overflow-hidden`}>
+                        <div className={`relative p-4 sm:p-6 md:p-8 bg-gradient-to-br ${selectedProject.gradient} text-white overflow-hidden`}>
                             <div className="absolute inset-0 bg-black/20"></div>
                             <div className="relative z-10">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="text-6xl animate-in slide-in-from-left duration-700">
+                                <div className="flex items-start justify-between mb-4 gap-4">
+                                    <div className="text-3xl sm:text-4xl md:text-6xl animate-in slide-in-from-left duration-700 flex-shrink-0">
                                         {selectedProject.image}
                                     </div>
                                     <Button
                                         variant="ghost"
                                         size="sm"
                                         onClick={closeProjectDialog}
-                                        className="text-white hover:bg-white/20 rounded-full animate-in slide-in-from-right duration-700"
+                                        className="text-white hover:bg-white/20 rounded-full animate-in slide-in-from-right duration-700 flex-shrink-0"
                                     >
-                                        <X className="h-5 w-5" />
+                                        <X className="h-4 w-4 sm:h-5 sm:w-5" />
                                     </Button>
                                 </div>
-                                <h1 className="text-4xl font-bold mb-2 animate-in slide-in-from-left duration-700 delay-100">
+                                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 animate-in slide-in-from-left duration-700 delay-100 leading-tight">
                                     {selectedProject.title}
                                 </h1>
-                                <p className="text-white/90 text-lg animate-in slide-in-from-left duration-700 delay-200">
+                                <p className="text-white/90 text-sm sm:text-base md:text-lg animate-in slide-in-from-left duration-700 delay-200 leading-relaxed">
                                     {selectedProject.detailedDescription}
                                 </p>
 
-                                {/* Project Stats */}
-                                <div className="flex items-center gap-6 mt-6 animate-in slide-in-from-left duration-700 delay-300">
-                                    <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                                        <Calendar className="h-4 w-4" />
-                                        <span className="text-sm">{selectedProject.duration}</span>
+                                {/* Project Stats - Responsive Layout */}
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 mt-4 sm:mt-6 animate-in slide-in-from-left duration-700 delay-300">
+                                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                                        <div className="flex items-center gap-1.5 sm:gap-2 bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full">
+                                            <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                            <span className="text-xs sm:text-sm whitespace-nowrap">{selectedProject.duration}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 sm:gap-2 bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full">
+                                            <Users className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                            <span className="text-xs sm:text-sm whitespace-nowrap">{selectedProject.team}</span>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                                        <Users className="h-4 w-4" />
-                                        <span className="text-sm">{selectedProject.team}</span>
-                                    </div>
-                                    <Badge className="bg-white/20 hover:bg-white/30 text-white border-0">
-                                        <div className="w-2 h-2 rounded-full bg-white mr-1 animate-pulse"></div>
-                                        {selectedProject.status}
+                                    <Badge className="bg-white/20 hover:bg-white/30 text-white border-0 w-fit">
+                                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white mr-1 animate-pulse"></div>
+                                        <span className="text-xs sm:text-sm">{selectedProject.status}</span>
                                     </Badge>
                                 </div>
                             </div>

@@ -145,7 +145,7 @@ const App = () => {
           {/* Floating Social Media Buttons */}
           <FloatingSocialButtons />
 
-          {/* Scroll To Top Button */}
+
           <ScrollToTopButton />
         </>
       )}

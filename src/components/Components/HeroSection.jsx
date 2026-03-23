@@ -8,8 +8,12 @@ import {
   ArrowDown,
   Code2,
   Terminal,
+  Cpu,
+  HardDrive,
+  Wifi,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GlitchText, ChromaticAberration, RGBSplitText } from "../animations/HackerAnimations";
 
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,12 +21,25 @@ export default function HeroSection() {
   const [displayedText, setDisplayedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [typingSpeed, setTypingSpeed] = useState(100);
+  const [terminalText, setTerminalText] = useState("");
+  const [currentTerminalIndex, setCurrentTerminalIndex] = useState(0);
+  const [terminalLines, setTerminalLines] = useState([]);
+  const [showCursor, setShowCursor] = useState(true);
 
   const roles = [
     "Full Stack Web Developer",
-    "MERN Stack Specialist",
+    "MERN Stack Specialist", 
     "UI/UX Enthusiast",
     "Next.js Developer",
+  ];
+
+  const terminalCommands = [
+    "root@kpdev:~$ whoami",
+    "> Kanishka Pasindu - Full Stack Developer",
+    "root@kpdev:~$ cat /etc/skills",
+    "> Loading technical expertise...",
+    "root@kpdev:~$ systemctl status developer.service",
+    "> ● developer.service - ACTIVE (running)",
   ];
 
   useEffect(() => {
@@ -33,6 +50,39 @@ export default function HeroSection() {
     }
 
     setIsVisible(true);
+  }, []);
+
+  // Terminal typing animation
+  useEffect(() => {
+    if (currentTerminalIndex < terminalCommands.length) {
+      const currentCommand = terminalCommands[currentTerminalIndex];
+      let charIndex = 0;
+      
+      const typeInterval = setInterval(() => {
+        if (charIndex < currentCommand.length) {
+          setTerminalText(currentCommand.slice(0, charIndex + 1));
+          charIndex++;
+        } else {
+          clearInterval(typeInterval);
+          setTimeout(() => {
+            setTerminalLines(prev => [...prev, currentCommand]);
+            setTerminalText("");
+            setCurrentTerminalIndex(prev => prev + 1);
+          }, 1000);
+        }
+      }, 80);
+
+      return () => clearInterval(typeInterval);
+    }
+  }, [currentTerminalIndex]);
+
+  // Cursor blinking effect
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 500);
+
+    return () => clearInterval(cursorInterval);
   }, []);
 
   useEffect(() => {
@@ -77,16 +127,45 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 dark:bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen bg-white text-black font-mono relative overflow-hidden">
       {/* Technical grid background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-30"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gray-200/50 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gray-300/50 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gray-100/50 rounded-full blur-3xl"></div>
       </div>
 
       <section className="relative pt-24 sm:pt-32 pb-20 sm:pb-32 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
+          {/* Terminal Header */}
+          <div className="mb-12">
+            <div className="bg-white border-2 border-black rounded-lg p-6 mb-8 shadow-lg shadow-gray-500/20 max-w-4xl mx-auto">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                </div>
+                <span className="text-black text-sm ml-4">terminal@kpdev-portfolio</span>
+              </div>
+              
+              <div className="text-left space-y-2 min-h-[120px]">
+                {terminalLines.map((line, index) => (
+                  <div key={index} className="text-black">
+                    {line}
+                  </div>
+                ))}
+                {currentTerminalIndex < terminalCommands.length && (
+                  <div className="text-black">
+                    {terminalText}
+                    {showCursor && <span className="bg-black text-white">█</span>}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Main content */}
           <div
             className={`transition-all duration-1000 transform ${
@@ -95,62 +174,52 @@ export default function HeroSection() {
                 : "translate-y-10 opacity-0"
             }`}
           >
-            {/* Technical Badge */}
-            <div className="mb-8 sm:mb-10">
-              <div className="items-center gap-2 px-4 py-2 bg-slate-900/50 dark:bg-slate-800/50 border border-slate-700/50 dark:border-slate-700/50 rounded-lg mb-8 backdrop-blur-sm text-center flex justify-center w-[270px] mx-auto">
-                <Code2 className="h-4 w-4 text-blue-400" />
-                <span className="text-sm font-mono font-medium text-slate-300 dark:text-slate-300">
-                  &gt; portfolio.init()
-                </span>
-              </div>
 
-              {/* Name with technical styling */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight text-white dark:text-white font-mono text-center">
-                <span className="inline-block animate-fade-in-up text-slate-400">
-                  const name = "
-                </span>
-                <span className="relative inline-block animate-fade-in-up delay-300 text-white">
-                  Kanishka
-                  <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-blue-500 transform scale-x-0 animate-scale-x delay-700"></span>
-                </span>
-                <span className="inline-block animate-fade-in-up delay-500 text-slate-400">
-                  ";
-                </span>
+
+            {/* Name with enhanced glitch effect */}
+            <div className="mb-8 sm:mb-10 text-center">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight text-black">
+                <GlitchText intensity="high" className="inline-block">
+                  <ChromaticAberration>
+                    KANISHKA PASINDU
+                  </ChromaticAberration>
+                </GlitchText>
               </h1>
+              <div className="w-32 h-0.5 bg-black mx-auto mb-6"></div>
+            </div>
 
-              {/* Typewriter role animation */}
-              <div className="min-h-[4.5rem] sm:min-h-[5rem] flex items-center justify-center mb-6 sm:mb-8 px-2">
-                <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-3 text-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <Terminal className="h-5 w-5 sm:h-6 sm:w-6 text-green-400 animate-fade-in-up delay-500" />
-                    <span className="text-slate-500 text-base sm:text-lg font-mono">
-                      $
-                    </span>
-                  </div>
-                  <h2 className="text-lg sm:text-2xl md:text-3xl text-slate-300 dark:text-slate-300 font-mono font-medium animate-fade-in-up delay-500 max-w-sm sm:max-w-none">
-                    <span className="text-white">{displayedText}</span>
-                    <span className="inline-block w-0.5 h-6 sm:h-8 bg-blue-500 ml-1 animate-blink align-middle"></span>
-                  </h2>
-                </div>
-              </div>
-
-              {/* Description with code-like styling */}
-              <div
-                className={`max-w-2xl mx-auto mb-10 sm:mb-12 transition-all duration-700 delay-700 transform ${
-                  isVisible
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-5 opacity-0"
-                }`}
-              >
-                <p className="text-base sm:text-lg text-slate-400 dark:text-slate-400 leading-relaxed font-mono">
-                  <span className="text-slate-500">//</span>{" "}
-                  <span className="text-slate-300">
-                    I create beautiful, responsive web applications with modern
-                    technologies. Passionate about clean code, user experience,
-                    and solving complex problems that make a real difference.
+            {/* Typewriter role animation */}
+            <div className="min-h-[4.5rem] sm:min-h-[5rem] flex items-center justify-center mb-6 sm:mb-8 px-2">
+              <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-3 text-center">
+                <div className="flex items-center justify-center gap-2">
+                  <Terminal className="h-5 w-5 sm:h-6 sm:w-6 text-black animate-fade-in-up delay-500" />
+                  <span className="text-gray-500 text-base sm:text-lg font-mono">
+                    $
                   </span>
-                </p>
+                </div>
+                <h2 className="text-lg sm:text-2xl md:text-3xl text-gray-700 font-mono font-medium animate-fade-in-up delay-500 max-w-sm sm:max-w-none">
+                  <RGBSplitText intensity="medium" trigger="hover">
+                    <span className="text-black">{displayedText}</span>
+                  </RGBSplitText>
+                  <span className="inline-block w-0.5 h-6 sm:h-8 bg-black ml-1 animate-blink align-middle animate-cursor-glow"></span>
+                </h2>
               </div>
+            </div>
+
+            {/* Description with code-like styling */}
+            <div
+              className={`max-w-2xl mx-auto mb-10 sm:mb-12 transition-all duration-700 delay-700 transform ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-5 opacity-0"
+              }`}
+            >
+              <p className="text-base sm:text-lg text-gray-600 leading-relaxed font-mono text-center">
+                <span className="text-gray-500">//</span>{" "}
+                <span className="text-gray-700">
+                  Executing innovative solutions through clean code architecture and modern development frameworks
+                </span>
+              </p>
             </div>
 
             {/* Action buttons with technical styling */}
@@ -163,22 +232,22 @@ export default function HeroSection() {
             >
               <Button
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white group transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/50 rounded-lg font-semibold px-8 border border-blue-500/50"
+                className="bg-black hover:bg-gray-800 text-white group transition-all duration-300 hover:shadow-lg hover:shadow-gray-500/50 rounded-lg font-semibold px-8 border-2 border-black font-mono"
                 onClick={downloadResume}
               >
                 <Download className="mr-2 h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
-                Download Resume
+                ./download_resume.sh
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-slate-700 hover:border-slate-600 text-slate-300 hover:text-white bg-slate-900/50 hover:bg-slate-800/50 backdrop-blur-sm rounded-lg font-semibold px-8"
+                className="border-2 border-black hover:border-black text-black hover:text-white bg-white hover:bg-black backdrop-blur-sm rounded-lg font-semibold px-8 font-mono"
                 onClick={() => {
                   const element = document.getElementById("projects");
                   element?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
-                View Projects
+                ./view_projects.sh
                 <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
@@ -196,34 +265,28 @@ export default function HeroSection() {
                   icon: Github,
                   href: "https://github.com/kpdevSE",
                   label: "GitHub",
-                  color:
-                    "hover:text-white hover:border-slate-600 hover:bg-slate-800",
                 },
                 {
                   icon: Linkedin,
                   href: "https://www.linkedin.com/in/kanishka-pasindu-b976a8252/",
                   label: "LinkedIn",
-                  color:
-                    "hover:text-blue-400 hover:border-blue-500/50 hover:bg-blue-500/10",
                 },
                 {
                   icon: Mail,
                   href: "mailto:kanishkapasindu6@gmail.com",
                   label: "Email",
-                  color:
-                    "hover:text-green-400 hover:border-green-500/50 hover:bg-green-500/10",
                 },
-              ].map(({ icon: Icon, href, label, color }, index) => (
+              ].map(({ icon: Icon, href, label }, index) => (
                 <a
                   key={label}
                   href={href}
-                  className={`p-3 rounded-lg bg-slate-900/50 dark:bg-slate-900/50 border border-slate-700/50 dark:border-slate-700/50 ${color} transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 backdrop-blur-sm group animate-fade-in-up`}
+                  className="p-3 rounded-lg bg-white border-2 border-black hover:bg-black hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-gray-500/20 backdrop-blur-sm group animate-fade-in-up"
                   style={{ animationDelay: `${1400 + index * 100}ms` }}
                   aria-label={label}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Icon className="h-5 w-5 text-slate-400 dark:text-slate-400 group-hover:scale-110 transition-all" />
+                  <Icon className="h-5 w-5 group-hover:scale-110 transition-all" />
                 </a>
               ))}
             </div>
@@ -236,11 +299,11 @@ export default function HeroSection() {
                   : "translate-y-5 opacity-0"
               }`}
             >
-              <div className="flex flex-col items-center text-slate-500 dark:text-slate-500">
+              <div className="flex flex-col items-center text-gray-500">
                 <span className="text-sm mb-2 font-mono font-medium">
-                  &gt; scroll.down()
+                  &gt; scroll.execute()
                 </span>
-                <ArrowDown className="h-5 w-5 animate-bounce text-blue-400" />
+                <ArrowDown className="h-5 w-5 animate-bounce text-black" />
               </div>
             </div>
           </div>
@@ -248,6 +311,18 @@ export default function HeroSection() {
       </section>
 
       <style>{`
+                .glitch-text {
+                  animation: glitch 2s infinite;
+                }
+                
+                @keyframes glitch {
+                  0%, 100% { transform: translate(0); }
+                  20% { transform: translate(-2px, 2px); }
+                  40% { transform: translate(-2px, -2px); }
+                  60% { transform: translate(2px, 2px); }
+                  80% { transform: translate(2px, -2px); }
+                }
+
                 @keyframes fade-in-up {
                     from {
                         opacity: 0;

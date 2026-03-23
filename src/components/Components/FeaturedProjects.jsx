@@ -34,6 +34,10 @@ import {
   Radio,
   Package,
   AlertTriangle,
+  Terminal,
+  Cpu,
+  HardDrive,
+  Wifi,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,12 +48,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { GlitchText, RGBSplitText, ChromaticAberration } from "../animations/HackerAnimations";
 
 export default function FeaturedProjects() {
   const [hoveredProject, setHoveredProject] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isSectionsOpen, setIsSectionsOpen] = useState(false);
+  const [typedText, setTypedText] = useState("");
+  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+  const [terminalLines, setTerminalLines] = useState([]);
+  const [showCursor, setShowCursor] = useState(true);
+
+  const hackerQuotes = [
+    "root@kpdev:~$ ls -la /projects/",
+    "> Scanning project repository...",
+    "root@kpdev:~$ cat featured_projects.json",
+    "> Loading portfolio data...",
+    "root@kpdev:~$ chmod +x showcase.sh",
+    "> Access granted. Displaying projects...",
+  ];
 
   const openProjectDialog = (project) => {
     setSelectedProject(project);
@@ -59,6 +78,41 @@ export default function FeaturedProjects() {
     setSelectedProject(null);
     setIsSectionsOpen(false);
   };
+
+  // Typing animation effect
+  useEffect(() => {
+    if (currentProjectIndex < hackerQuotes.length) {
+      const currentQuote = hackerQuotes[currentProjectIndex];
+      let charIndex = 0;
+      
+      const typeInterval = setInterval(() => {
+        if (charIndex < currentQuote.length) {
+          setTypedText(currentQuote.slice(0, charIndex + 1));
+          charIndex++;
+        } else {
+          clearInterval(typeInterval);
+          setTimeout(() => {
+            setTerminalLines(prev => [...prev, currentQuote]);
+            setTypedText("");
+            setCurrentProjectIndex(prev => prev + 1);
+          }, 1000);
+        }
+      }, 100);
+
+      return () => clearInterval(typeInterval);
+    } else {
+      setIsTyping(false);
+    }
+  }, [currentProjectIndex]);
+
+  // Cursor blinking effect
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 500);
+
+    return () => clearInterval(cursorInterval);
+  }, []);
 
   useEffect(() => {
     setIsVisible(true);
@@ -505,16 +559,17 @@ export default function FeaturedProjects() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 dark:bg-slate-950">
+    <div className="min-h-screen bg-white text-black font-mono">
       <section id="projects" className="py-24 px-4 relative overflow-hidden">
         {/* Technical grid background */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20"></div>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-30"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gray-200/50 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gray-300/50 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gray-100/50 rounded-full blur-3xl"></div>
         </div>
         <div className="max-w-7xl mx-auto relative z-10">
-          {/* Header */}
+          {/* Hacker Terminal Header */}
           <div
             className={`text-center mb-20 transition-all duration-1000 ${
               isVisible
@@ -522,33 +577,51 @@ export default function FeaturedProjects() {
                 : "opacity-0 translate-y-10"
             }`}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900/50 dark:bg-slate-800/50 border border-slate-700/50 dark:border-slate-700/50 rounded-lg backdrop-blur-sm mb-6">
-              <Code2 className="h-4 w-4 text-blue-400" />
-              <span className="text-sm font-mono font-medium text-slate-300 dark:text-slate-300">
-                &gt; projects.load()
-              </span>
+            <div className="bg-white border-2 border-black rounded-lg p-6 mb-8 shadow-lg shadow-gray-500/20 max-w-4xl mx-auto">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                </div>
+                <span className="text-black text-sm ml-4">terminal@kpdev-projects</span>
+              </div>
+              
+              <div className="text-left space-y-2">
+                {terminalLines.map((line, index) => (
+                  <div key={index} className="text-black">
+                    {line}
+                  </div>
+                ))}
+                {isTyping && (
+                  <div className="text-black">
+                    {typedText}
+                    {showCursor && <span className="bg-black text-white">█</span>}
+                  </div>
+                )}
+              </div>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-bold font-mono text-white mb-4">
-              Featured Projects
+            <h2 className="text-6xl font-bold text-black mb-6">
+              <GlitchText intensity="high">
+                <RGBSplitText intensity="medium" trigger="hover">
+                  PROJECT SHOWCASE
+                </RGBSplitText>
+              </GlitchText>
             </h2>
-
-            <p className="text-xl text-slate-300 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed font-mono">
-              <span className="text-slate-500">//</span> Showcasing innovative
-              solutions built with modern technologies and best practices
+            <div className="w-24 h-0.5 bg-black mx-auto mb-6"></div>
+            <p className="text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
+              <span className="text-gray-500">//</span> Deploying innovative solutions across the digital landscape...
             </p>
-
-            <div className="flex justify-center mt-8">
-              <div className="w-24 h-0.5 bg-blue-500"></div>
-            </div>
           </div>
+
 
           {/* Projects Grid */}
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
             {projects.map((project, index) => (
               <Card
                 key={index}
-                className={`group relative flex flex-col overflow-hidden rounded-2xl border border-slate-700/50 dark:border-slate-700/50 bg-slate-900/50 dark:bg-slate-900/50 shadow-sm hover:shadow-lg hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 cursor-pointer backdrop-blur-sm ${
+                className={`group relative flex flex-col overflow-hidden rounded-2xl border-2 border-black bg-white shadow-sm hover:shadow-xl hover:shadow-gray-500/20 transition-all duration-300 hover:-translate-y-2 hover:scale-105 cursor-pointer backdrop-blur-sm ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-10"
@@ -561,78 +634,56 @@ export default function FeaturedProjects() {
                   transitionDelay: `${index * 100}ms`,
                 }}
               >
-                <div className="absolute inset-x-0 top-0 h-0.5 bg-blue-500"></div>
+                <div className="absolute inset-x-0 top-0 h-0.5 bg-black"></div>
                 <CardHeader className="relative z-10 pb-4">
                   {/* Project image and status */}
                   <div className="flex items-start justify-between mb-3">
-                    <div className="text-4xl p-3 rounded-xl border border-slate-700/50 transition-all duration-300 group-hover:scale-105 bg-slate-800/50 group-hover:border-blue-500/50">
+                    <div className="text-4xl p-3 rounded-xl border-2 border-black transition-all duration-300 group-hover:scale-105 bg-gray-100 group-hover:bg-black group-hover:text-white">
                       {project.image}
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <Badge
-                        variant={
-                          project.status === "Live" ? "default" : "secondary"
-                        }
-                        className={`${
-                          project.status === "Live"
-                            ? "bg-emerald-600 hover:bg-emerald-700"
-                            : "bg-amber-600 hover:bg-amber-700"
-                        } text-white border-0`}
-                      >
-                        <div className="w-1.5 h-1.5 rounded-full bg-white mr-1.5"></div>
-                        {project.status}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-black rounded-full animate-pulse"></div>
+                        <span className="text-xs text-black font-mono">OPERATIONAL</span>
+                      </div>
                     </div>
                   </div>
 
-                  <CardTitle className="text-xl font-semibold font-mono text-white mb-2 transition-colors group-hover:text-blue-400">
+                  <CardTitle className="text-xl text-black font-semibold font-mono mb-2 transition-colors group-hover:text-gray-700">
                     {project.title}
                     {hoveredProject === index && (
-                      <ArrowUpRight className="inline-block ml-2 h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 text-blue-400" />
+                      <ArrowUpRight className="inline-block ml-2 h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 text-black" />
                     )}
                   </CardTitle>
 
-                  <CardDescription className="text-slate-300 dark:text-slate-300 leading-relaxed font-mono text-sm">
-                    <span className="text-slate-500">//</span>{" "}
+                  <CardDescription className="text-gray-700 leading-relaxed font-mono text-sm">
+                    <span className="text-gray-500">//</span>{" "}
                     {project.description}
                   </CardDescription>
                 </CardHeader>
 
                 <CardContent className="relative z-10 space-y-5 flex-1 flex flex-col">
+                  {/* Command Line */}
+                  <div className="p-3 bg-gray-100 border border-gray-300 rounded font-mono text-sm">
+                    <span className="text-gray-700">$</span> <span className="text-black">./deploy --project={project.title.toLowerCase().replace(/\s+/g, '-')}</span>
+                  </div>
+
                   <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="px-2.5 py-1 rounded-md border border-slate-700/50 bg-slate-800/50 text-slate-300 font-mono">
+                    <span className="px-2.5 py-1 rounded-md border-2 border-black bg-white text-black font-mono">
                       Duration · {project.duration}
                     </span>
-                    <span className="px-2.5 py-1 rounded-md border border-slate-700/50 bg-slate-800/50 text-slate-300 font-mono">
+                    <span className="px-2.5 py-1 rounded-md border border-gray-300 bg-gray-200 text-gray-700 font-mono">
                       Team · {project.team}
                     </span>
-                    <span className="px-2.5 py-1 rounded-md border border-blue-500/50 bg-blue-500/10 text-blue-400 font-mono font-medium">
+                    <span className="px-2.5 py-1 rounded-md border-2 border-black bg-black text-white font-mono font-medium">
                       Status · {project.status}
                     </span>
                   </div>
 
-                  {/* Stats */}
-                  {/* <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1.5">
-                        <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                        <span className="font-medium">{project.stars}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Eye className="h-4 w-4" />
-                        <span className="font-medium">{project.views}</span>
-                      </div>
-                    </div>
-                    <TrendingUp
-                      className="h-4 w-4 text-slate-400"
-                      style={{ color: project.accent }}
-                    />
-                  </div> */}
-
                   {/* Tech Stack */}
                   <div>
-                    <h4 className="font-semibold mb-3 font-mono text-white flex items-center gap-2 text-sm">
-                      <Code2 className="h-4 w-4 text-blue-400" />
+                    <h4 className="font-semibold mb-3 font-mono text-black flex items-center gap-2 text-sm">
+                      <Code2 className="h-4 w-4 text-black" />
                       Tech Stack
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -640,7 +691,7 @@ export default function FeaturedProjects() {
                         <Badge
                           key={tech}
                           variant="outline"
-                          className="text-xs bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-800 hover:border-blue-500/50 transition-colors font-mono"
+                          className="text-xs bg-gray-200 border-gray-300 text-gray-700 hover:bg-gray-300 hover:border-black transition-colors font-mono"
                         >
                           {tech}
                         </Badge>
@@ -648,7 +699,7 @@ export default function FeaturedProjects() {
                       {project.tech.length > 3 && (
                         <Badge
                           variant="outline"
-                          className="text-xs bg-slate-800/50 border-slate-700/50 text-slate-300 font-mono"
+                          className="text-xs bg-gray-200 border-gray-300 text-gray-700 font-mono"
                         >
                           +{project.tech.length - 3}
                         </Badge>
@@ -656,32 +707,12 @@ export default function FeaturedProjects() {
                     </div>
                   </div>
 
-                  {/* <div>
-                    <h4 className="font-semibold mb-3 text-slate-700 dark:text-slate-200 text-sm">
-                      Key Features
-                    </h4>
-                    <div className="space-y-2">
-                      {project.features.slice(0, 2).map((feature) => (
-                        <div
-                          key={feature}
-                          className="flex items-start gap-2.5 text-sm text-slate-600 dark:text-slate-300"
-                        >
-                          <div
-                            className="mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0"
-                            style={{ backgroundColor: project.accent }}
-                          ></div>
-                          <span className="leading-relaxed">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div> */}
-
                   {/* Click hint */}
-                  <div className="mt-auto pt-4 border-t border-slate-700/50 dark:border-slate-700/50 flex items-center justify-between text-sm text-slate-400 dark:text-slate-400">
+                  <div className="mt-auto pt-4 border-t-2 border-black flex items-center justify-between text-sm text-black">
                     <span className="font-mono font-medium">
-                      &gt; view.details()
+                      &gt; access.project()
                     </span>
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center border border-blue-500/50 bg-blue-500/10 text-blue-400 transition-all group-hover:scale-105 group-hover:bg-blue-500/20">
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center border-2 border-black bg-white text-black transition-all group-hover:scale-105 group-hover:bg-black group-hover:text-white">
                       <ArrowUpRight className="h-4 w-4" />
                     </div>
                   </div>
@@ -690,7 +721,7 @@ export default function FeaturedProjects() {
             ))}
           </div>
 
-          {/* Bottom CTA */}
+          {/* Bottom Terminal */}
           <div
             className={`text-center mt-16 transition-all duration-1000 delay-600 ${
               isVisible
@@ -698,13 +729,30 @@ export default function FeaturedProjects() {
                 : "opacity-0 translate-y-10"
             }`}
           >
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/50 dark:bg-slate-900/50 rounded-lg border border-slate-700/50 dark:border-slate-700/50 backdrop-blur-sm">
-              <span className="text-sm font-mono font-medium text-slate-300 dark:text-slate-300">
-                &gt; more.projects()
+            <div className="bg-white border-2 border-black rounded-lg p-4 shadow-lg shadow-gray-500/20 inline-flex items-center gap-2">
+              <div className="w-2 h-2 bg-black rounded-full animate-pulse"></div>
+              <span className="text-black font-mono text-sm">
+                root@kpdev:~$ find /projects -name "*.deployed" | wc -l
               </span>
+              <div className="w-2 h-2 bg-black rounded-full animate-pulse" style={{ animationDelay: "0.5s" }}></div>
             </div>
           </div>
         </div>
+
+        {/* CSS Animations */}
+        <style jsx>{`
+          .glitch-text {
+            animation: glitch 2s infinite;
+          }
+          
+          @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+          }
+        `}</style>
       </section>
 
       {/* Project Details Sheet (Right-side panel) */}
@@ -718,17 +766,17 @@ export default function FeaturedProjects() {
 
           {/* Centered Modal Container */}
           <div className="absolute inset-0 flex items-center justify-center p-2 sm:p-4">
-            <div className="relative w-full max-w-5xl h-[95vh] sm:h-[90vh] bg-slate-950 dark:bg-slate-950 border border-slate-700/50 dark:border-slate-700/50 rounded-xl sm:rounded-2xl shadow-xl animate-in zoom-in-95 duration-300 flex flex-col overflow-hidden">
-              <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-700/50 dark:border-slate-700/50 bg-slate-900/50 dark:bg-slate-900/50 flex-shrink-0 backdrop-blur-sm">
+            <div className="relative w-full max-w-5xl h-[95vh] sm:h-[90vh] bg-white border border-gray-300 rounded-xl sm:rounded-2xl shadow-xl animate-in zoom-in-95 duration-300 flex flex-col overflow-hidden">
+              <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-300 bg-gray-100 flex-shrink-0 backdrop-blur-sm">
                 <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center text-xl sm:text-2xl border border-slate-700/50 bg-slate-800/50 flex-shrink-0">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center text-xl sm:text-2xl border border-gray-300 bg-gray-200 flex-shrink-0">
                     {selectedProject.image}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono font-medium mb-1 hidden sm:block">
+                    <p className="text-xs uppercase tracking-wider text-gray-500 font-mono font-medium mb-1 hidden sm:block">
                       &gt; project.details()
                     </p>
-                    <h1 className="text-lg sm:text-xl md:text-2xl font-semibold font-mono text-white truncate">
+                    <h1 className="text-lg sm:text-xl md:text-2xl font-semibold font-mono text-black truncate">
                       {selectedProject.title}
                     </h1>
                   </div>
@@ -737,8 +785,8 @@ export default function FeaturedProjects() {
                   <Badge
                     className={`${
                       selectedProject.status === "Live"
-                        ? "bg-emerald-600 hover:bg-emerald-700"
-                        : "bg-amber-600 hover:bg-amber-700"
+                        ? "bg-black hover:bg-gray-800"
+                        : "bg-gray-600 hover:bg-gray-700"
                     } text-white border-0 text-xs`}
                   >
                     {selectedProject.status}
@@ -747,7 +795,7 @@ export default function FeaturedProjects() {
                     variant="ghost"
                     size="icon"
                     onClick={closeProjectDialog}
-                    className="rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 h-8 w-8 sm:h-10 sm:w-10"
+                    className="rounded-lg text-gray-500 hover:text-black hover:bg-gray-100 h-8 w-8 sm:h-10 sm:w-10"
                   >
                     <X className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
@@ -757,8 +805,8 @@ export default function FeaturedProjects() {
               <div className="flex-1 overflow-y-auto">
                 <div className="flex flex-col lg:grid lg:grid-cols-[1.6fr_1fr] gap-4 sm:gap-6 p-4 sm:p-6 md:p-8">
                   <div className="space-y-4 sm:space-y-6 order-1 lg:order-1">
-                    <p className="text-sm sm:text-base text-slate-300 dark:text-slate-300 leading-relaxed font-mono">
-                      <span className="text-slate-500">//</span>{" "}
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-mono">
+                      <span className="text-gray-500">//</span>{" "}
                       {selectedProject.detailedDescription}
                     </p>
 
@@ -770,12 +818,12 @@ export default function FeaturedProjects() {
                       ].map((item) => (
                         <div
                           key={item.label}
-                          className="rounded-lg border border-slate-700/50 bg-slate-800/50 px-4 py-3"
+                          className="rounded-lg border border-gray-300 bg-gray-200 px-4 py-3"
                         >
-                          <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 font-mono font-medium mb-1">
+                          <p className="text-xs uppercase tracking-wide text-gray-500 font-mono font-medium mb-1">
                             {item.label}
                           </p>
-                          <p className="text-sm font-semibold font-mono text-white">
+                          <p className="text-sm font-semibold font-mono text-black">
                             {item.value}
                           </p>
                         </div>
@@ -783,8 +831,8 @@ export default function FeaturedProjects() {
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-semibold font-mono text-white mb-3 flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-blue-400" />
+                      <h3 className="text-sm font-semibold font-mono text-black mb-3 flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4 text-black" />
                         Impact Metrics
                       </h3>
                       <div className="space-y-2.5">
@@ -793,9 +841,9 @@ export default function FeaturedProjects() {
                           .map((highlight) => (
                             <div
                               key={highlight}
-                              className="flex items-start gap-2.5 sm:gap-3 text-sm text-slate-300 dark:text-slate-300 font-mono"
+                              className="flex items-start gap-2.5 sm:gap-3 text-sm text-gray-700 font-mono"
                             >
-                              <div className="mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0 bg-blue-500"></div>
+                              <div className="mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0 bg-black"></div>
                               <span className="leading-relaxed">
                                 {highlight}
                               </span>
@@ -805,15 +853,15 @@ export default function FeaturedProjects() {
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-semibold font-mono text-white mb-3 flex items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-blue-400" />
+                      <h3 className="text-sm font-semibold font-mono text-black mb-3 flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-black" />
                         Key Features
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         {selectedProject.features.map((feature) => (
                           <div
                             key={feature}
-                            className="rounded-lg border border-slate-700/50 bg-slate-800/50 px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-slate-300 dark:text-slate-200 font-mono"
+                            className="rounded-lg border border-gray-300 bg-gray-200 px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-gray-700 font-mono"
                           >
                             {feature}
                           </div>
@@ -823,41 +871,41 @@ export default function FeaturedProjects() {
                   </div>
 
                   <div className="space-y-4 order-2 lg:order-2 lg:overflow-y-auto lg:pl-2">
-                    <div className="rounded-lg border border-slate-700/50 bg-slate-800/50 p-4 sm:p-5 space-y-3">
-                      <h4 className="text-sm font-semibold font-mono text-white">
+                    <div className="rounded-lg border border-gray-300 bg-gray-200 p-4 sm:p-5 space-y-3">
+                      <h4 className="text-sm font-semibold font-mono text-black">
                         Project Stats
                       </h4>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-slate-400 dark:text-slate-400 font-mono">
+                          <span className="text-gray-600 font-mono">
                             Stars
                           </span>
-                          <span className="font-semibold font-mono text-white">
+                          <span className="font-semibold font-mono text-black">
                             {selectedProject.stars}
                           </span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-slate-400 dark:text-slate-400 font-mono">
+                          <span className="text-gray-600 font-mono">
                             Views
                           </span>
-                          <span className="font-semibold font-mono text-white">
+                          <span className="font-semibold font-mono text-black">
                             {selectedProject.views}
                           </span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-slate-400 dark:text-slate-400 font-mono">
+                          <span className="text-gray-600 font-mono">
                             Status
                           </span>
-                          <span className="font-semibold font-mono text-white">
+                          <span className="font-semibold font-mono text-black">
                             {selectedProject.status}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="rounded-lg border border-slate-700/50 bg-slate-800/50 p-4 sm:p-5">
-                      <h4 className="text-sm font-semibold font-mono text-white mb-3 flex items-center gap-2">
-                        <Code2 className="h-4 w-4 text-blue-400" />
+                    <div className="rounded-lg border border-gray-300 bg-gray-200 p-4 sm:p-5">
+                      <h4 className="text-sm font-semibold font-mono text-black mb-3 flex items-center gap-2">
+                        <Code2 className="h-4 w-4 text-black" />
                         Tech Stack
                       </h4>
                       <div className="flex flex-wrap gap-2">
@@ -865,7 +913,7 @@ export default function FeaturedProjects() {
                           <Badge
                             key={tech}
                             variant="outline"
-                            className="text-xs bg-slate-900 border-slate-700/50 text-slate-300 font-mono"
+                            className="text-xs bg-gray-100 border-gray-300 text-gray-700 font-mono"
                           >
                             {tech}
                           </Badge>
@@ -873,17 +921,17 @@ export default function FeaturedProjects() {
                       </div>
                     </div>
 
-                    <div className="rounded-lg border border-slate-700/50 bg-slate-800/50 p-4 sm:p-5">
-                      <h4 className="text-sm font-semibold font-mono text-white mb-2">
+                    <div className="rounded-lg border border-gray-300 bg-gray-200 p-4 sm:p-5">
+                      <h4 className="text-sm font-semibold font-mono text-black mb-2">
                         Detailed Breakdown
                       </h4>
-                      <p className="text-sm text-slate-300 dark:text-slate-300 mb-4 leading-relaxed font-mono">
-                        <span className="text-slate-500">//</span> Explore
+                      <p className="text-sm text-gray-700 mb-4 leading-relaxed font-mono">
+                        <span className="text-gray-500">//</span> Explore
                         comprehensive features, technical details, and success
                         metrics.
                       </p>
                       <Button
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white border-0 hover:opacity-90 transition-opacity"
+                        className="w-full bg-black hover:bg-gray-800 text-white border-0 hover:opacity-90 transition-opacity"
                         onClick={() => setIsSectionsOpen(true)}
                       >
                         <Sparkles className="mr-2 h-4 w-4" /> View Full Details
@@ -893,11 +941,11 @@ export default function FeaturedProjects() {
                 </div>
               </div>
 
-              <div className="shrink-0 px-4 sm:px-6 py-4 sm:py-4 border-t border-slate-800/50 dark:border-slate-800 bg-slate-800/50 dark:bg-slate-900 flex">
+              <div className="shrink-0 px-4 sm:px-6 py-4 sm:py-4 border-t border-gray-300 bg-gray-200 flex">
                 <div className="flex flex-row flex-wrap gap-3 sm:gap-3 w-full">
                   <Button
                     size="lg"
-                    className="!h-12 sm:!h-11 !rounded-xl sm:!rounded-lg bg-blue-600 hover:bg-blue-700 text-white border-0 flex-1 min-w-[140px] hover:opacity-90 transition-opacity text-sm sm:text-base !font-semibold !shadow-lg sm:!shadow-none active:scale-[0.98] sm:active:scale-100 font-mono"
+                    className="!h-12 sm:!h-11 !rounded-xl sm:!rounded-lg bg-black hover:bg-gray-800 text-white border-0 flex-1 min-w-[140px] hover:opacity-90 transition-opacity text-sm sm:text-base !font-semibold !shadow-lg sm:!shadow-none active:scale-[0.98] sm:active:scale-100 font-mono"
                     onClick={() => window.open(selectedProject.demo, "_blank")}
                   >
                     <ExternalLink className="mr-2 h-5 w-5 sm:h-5 sm:w-5" />
@@ -906,7 +954,7 @@ export default function FeaturedProjects() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="!h-12 sm:!h-11 !rounded-xl sm:!rounded-lg !border-2 border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-blue-500/50 flex-1 min-w-[140px] transition-all duration-200 text-sm sm:text-base !font-semibold !bg-slate-900/50 active:scale-[0.98] sm:active:scale-100 font-mono"
+                    className="!h-12 sm:!h-11 !rounded-xl sm:!rounded-lg !border-2 border-gray-300 text-gray-700 hover:bg-gray-300 hover:border-gray-400 flex-1 min-w-[140px] transition-all duration-200 text-sm sm:text-base !font-semibold !bg-gray-100 active:scale-[0.98] sm:active:scale-100 font-mono"
                     onClick={() =>
                       window.open(selectedProject.github, "_blank")
                     }
@@ -931,10 +979,10 @@ export default function FeaturedProjects() {
           ></div>
 
           {/* Modal */}
-          <div className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden bg-slate-950 dark:bg-slate-950 rounded-2xl shadow-xl border border-slate-700/50 dark:border-slate-700/50 animate-in zoom-in-95 duration-300">
+          <div className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden bg-white rounded-2xl shadow-xl border border-gray-300 animate-in zoom-in-95 duration-300">
             {/* Header */}
-            <div className="relative p-6 text-white border-b border-slate-700/50 bg-slate-900/50">
-              <div className="absolute top-0 left-0 right-0 h-0.5 bg-blue-500"></div>
+            <div className="relative p-6 text-black border-b border-gray-300 bg-gray-100">
+              <div className="absolute top-0 left-0 right-0 h-0.5 bg-black"></div>
               <div className="relative z-10 flex items-center justify-between">
                 <h2 className="text-xl sm:text-2xl font-semibold font-mono">
                   Detailed Sections
@@ -943,7 +991,7 @@ export default function FeaturedProjects() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsSectionsOpen(false)}
-                  className="text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg"
+                  className="text-gray-700 hover:bg-gray-200 hover:text-black rounded-lg"
                 >
                   <X className="h-5 w-5" />
                 </Button>
@@ -954,24 +1002,24 @@ export default function FeaturedProjects() {
             <div className="p-6 overflow-y-auto max-h-[65vh]">
               {/* Key Features */}
               <div className="mb-8">
-                <h3 className="text-lg sm:text-xl font-semibold font-mono mb-4 flex items-center gap-2 text-white">
-                  <Sparkles className="h-5 w-5 text-blue-400" />
+                <h3 className="text-lg sm:text-xl font-semibold font-mono mb-4 flex items-center gap-2 text-black">
+                  <Sparkles className="h-5 w-5 text-black" />
                   Key Features
                 </h3>
                 <div className="space-y-3">
                   {selectedProject.detailedFeatures.map((feature, index) => (
                     <div
                       key={index}
-                      className="flex items-start gap-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50"
+                      className="flex items-start gap-4 p-4 bg-gray-200 rounded-lg border border-gray-300"
                     >
-                      <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-700 flex-shrink-0">
-                        <feature.icon className="h-5 w-5 text-blue-400" />
+                      <div className="p-2.5 rounded-lg bg-gray-100 border border-gray-300 flex-shrink-0">
+                        <feature.icon className="h-5 w-5 text-black" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-semibold font-mono text-white mb-1">
+                        <h4 className="font-semibold font-mono text-black mb-1">
                           {feature.title}
                         </h4>
-                        <p className="text-sm text-slate-300 leading-relaxed font-mono">
+                        <p className="text-sm text-gray-700 leading-relaxed font-mono">
                           {feature.desc}
                         </p>
                       </div>
@@ -982,8 +1030,8 @@ export default function FeaturedProjects() {
 
               {/* Tech Stack */}
               <div className="mb-8">
-                <h3 className="text-lg sm:text-xl font-semibold font-mono mb-4 flex items-center gap-2 text-white">
-                  <Code2 className="h-5 w-5 text-blue-400" />
+                <h3 className="text-lg sm:text-xl font-semibold font-mono mb-4 flex items-center gap-2 text-black">
+                  <Code2 className="h-5 w-5 text-black" />
                   Tech Stack
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -991,7 +1039,7 @@ export default function FeaturedProjects() {
                     <Badge
                       key={tech}
                       variant="outline"
-                      className="text-xs px-3 py-1.5 bg-slate-800/50 border-slate-700/50 text-slate-300 font-mono"
+                      className="text-xs px-3 py-1.5 bg-gray-200 border-gray-300 text-gray-700 font-mono"
                     >
                       {tech}
                     </Badge>
@@ -1001,17 +1049,17 @@ export default function FeaturedProjects() {
 
               {/* Highlights */}
               <div>
-                <h3 className="text-lg sm:text-xl font-semibold font-mono mb-4 flex items-center gap-2 text-white">
-                  <TrendingUp className="h-5 w-5 text-blue-400" />
+                <h3 className="text-lg sm:text-xl font-semibold font-mono mb-4 flex items-center gap-2 text-black">
+                  <TrendingUp className="h-5 w-5 text-black" />
                   Highlights
                 </h3>
                 <div className="space-y-2.5">
                   {selectedProject.highlights.map((highlight, index) => (
                     <div
                       key={index}
-                      className="flex items-start gap-3 text-slate-300 font-mono"
+                      className="flex items-start gap-3 text-gray-700 font-mono"
                     >
-                      <div className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0 bg-blue-500"></div>
+                      <div className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0 bg-black"></div>
                       <span className="text-sm leading-relaxed">
                         {highlight}
                       </span>
@@ -1021,17 +1069,17 @@ export default function FeaturedProjects() {
               </div>
 
               {/* Footer Actions */}
-              <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-slate-700/50 dark:border-slate-700/50">
+              <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-300">
                 <Button
                   variant="outline"
                   onClick={() => setIsSectionsOpen(false)}
-                  className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-blue-500/50 font-mono"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-200 hover:border-gray-400 font-mono"
                 >
                   Close
                 </Button>
                 <Button
                   onClick={() => setIsSectionsOpen(false)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white border-0 hover:opacity-90 transition-opacity font-mono"
+                  className="bg-black hover:bg-gray-800 text-white border-0 hover:opacity-90 transition-opacity font-mono"
                 >
                   Done
                 </Button>

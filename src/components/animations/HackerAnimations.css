@@ -1,0 +1,443 @@
+/* Hacker Theme Advanced Animations */
+
+/* Grid Movement Animation */
+@keyframes grid-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(2rem, 2rem); }
+}
+
+.animate-grid-move {
+  animation: grid-move 20s linear infinite;
+}
+
+/* Floating Animations */
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(30px, -30px) rotate(1deg); }
+  66% { transform: translate(-20px, 20px) rotate(-1deg); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(-30px, 30px) rotate(-1deg); }
+  66% { transform: translate(20px, -20px) rotate(1deg); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* Pulse Slow Animation */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+/* Terminal Boot Sequence Animations */
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.animate-typing {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 0.5s steps(40, end);
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}
+
+/* Enhanced Glitch Effects */
+@keyframes glitch {
+  0%, 100% { 
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  10% { 
+    transform: translate(-2px, 2px);
+    filter: hue-rotate(90deg);
+  }
+  20% { 
+    transform: translate(-2px, -2px);
+    filter: hue-rotate(180deg);
+  }
+  30% { 
+    transform: translate(2px, 2px);
+    filter: hue-rotate(270deg);
+  }
+  40% { 
+    transform: translate(2px, -2px);
+    filter: hue-rotate(360deg);
+  }
+  50% { 
+    transform: translate(-2px, 2px);
+    filter: hue-rotate(90deg);
+  }
+  60% { 
+    transform: translate(-2px, -2px);
+    filter: hue-rotate(180deg);
+  }
+  70% { 
+    transform: translate(2px, 2px);
+    filter: hue-rotate(270deg);
+  }
+  80% { 
+    transform: translate(2px, -2px);
+    filter: hue-rotate(360deg);
+  }
+  90% { 
+    transform: translate(-2px, 2px);
+    filter: hue-rotate(90deg);
+  }
+}
+
+@keyframes glitch-subtle {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(1px, 1px); }
+  80% { transform: translate(1px, -1px); }
+}
+
+@keyframes glitch-intense {
+  0%, 100% { 
+    transform: translate(0);
+    filter: hue-rotate(0deg) saturate(1);
+  }
+  10% { 
+    transform: translate(-4px, 4px);
+    filter: hue-rotate(90deg) saturate(2);
+  }
+  20% { 
+    transform: translate(-4px, -4px);
+    filter: hue-rotate(180deg) saturate(0.5);
+  }
+  30% { 
+    transform: translate(4px, 4px);
+    filter: hue-rotate(270deg) saturate(2);
+  }
+  40% { 
+    transform: translate(4px, -4px);
+    filter: hue-rotate(360deg) saturate(1);
+  }
+  50% { 
+    transform: translate(-4px, 4px) skew(2deg);
+    filter: hue-rotate(90deg) saturate(2);
+  }
+  60% { 
+    transform: translate(-4px, -4px) skew(-2deg);
+    filter: hue-rotate(180deg) saturate(0.5);
+  }
+  70% { 
+    transform: translate(4px, 4px) skew(2deg);
+    filter: hue-rotate(270deg) saturate(2);
+  }
+  80% { 
+    transform: translate(4px, -4px) skew(-2deg);
+    filter: hue-rotate(360deg) saturate(1);
+  }
+  90% { 
+    transform: translate(-4px, 4px);
+    filter: hue-rotate(90deg) saturate(2);
+  }
+}
+
+.animate-glitch {
+  animation: glitch 0.3s infinite;
+}
+
+.animate-glitch-subtle {
+  animation: glitch-subtle 0.2s infinite;
+}
+
+.animate-glitch-intense {
+  animation: glitch-intense 0.4s infinite;
+}
+
+/* RGB Split Effects */
+@keyframes glitch-red {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 0); }
+  40% { transform: translate(-2px, 0); }
+  60% { transform: translate(2px, 0); }
+  80% { transform: translate(2px, 0); }
+}
+
+@keyframes glitch-blue {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(2px, 0); }
+  40% { transform: translate(2px, 0); }
+  60% { transform: translate(-2px, 0); }
+  80% { transform: translate(-2px, 0); }
+}
+
+.animate-glitch-red {
+  animation: glitch-red 0.3s infinite;
+}
+
+.animate-glitch-blue {
+  animation: glitch-blue 0.3s infinite;
+}
+
+/* RGB Split Text Effects */
+@keyframes rgb-split-low {
+  0%, 100% { transform: translate(0); }
+  33% { transform: translate(-1px, 0); }
+  66% { transform: translate(1px, 0); }
+}
+
+@keyframes rgb-split-medium {
+  0%, 100% { transform: translate(0); }
+  25% { transform: translate(-2px, 0); }
+  50% { transform: translate(2px, 0); }
+  75% { transform: translate(-1px, 0); }
+}
+
+@keyframes rgb-split-high {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-3px, 0); }
+  40% { transform: translate(3px, 0); }
+  60% { transform: translate(-2px, 0); }
+  80% { transform: translate(2px, 0); }
+}
+
+@keyframes rgb-red {
+  0%, 100% { transform: translate(0); }
+  50% { transform: translate(-2px, 0); }
+}
+
+@keyframes rgb-cyan {
+  0%, 100% { transform: translate(0); }
+  50% { transform: translate(2px, 0); }
+}
+
+.animate-rgb-split-low {
+  animation: rgb-split-low 0.2s infinite;
+}
+
+.animate-rgb-split-medium {
+  animation: rgb-split-medium 0.3s infinite;
+}
+
+.animate-rgb-split-high {
+  animation: rgb-split-high 0.4s infinite;
+}
+
+.animate-rgb-red {
+  animation: rgb-red 0.1s infinite;
+}
+
+.animate-rgb-cyan {
+  animation: rgb-cyan 0.1s infinite;
+}
+
+/* Chromatic Aberration Effects */
+@keyframes chromatic-base {
+  0%, 100% { transform: translate(0); }
+  25% { transform: translate(-1px, 0); }
+  50% { transform: translate(1px, 0); }
+  75% { transform: translate(-0.5px, 0); }
+}
+
+@keyframes chromatic-red {
+  0%, 100% { transform: translate(0); }
+  50% { transform: translate(-2px, 0); }
+}
+
+@keyframes chromatic-blue {
+  0%, 100% { transform: translate(0); }
+  50% { transform: translate(2px, 0); }
+}
+
+.animate-chromatic-base {
+  animation: chromatic-base 0.2s infinite;
+}
+
+.animate-chromatic-red {
+  animation: chromatic-red 0.2s infinite;
+}
+
+.animate-chromatic-blue {
+  animation: chromatic-blue 0.2s infinite;
+}
+
+/* Scan Lines Animation */
+@keyframes scan-lines {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.animate-scan-lines {
+  animation: scan-lines 2s linear infinite;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.8), transparent);
+}
+
+/* Typing Sound Effect Visual */
+@keyframes typing-pulse {
+  0% { 
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% { 
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+}
+
+/* Matrix/Binary Rain Optimizations */
+.matrix-rain, .binary-rain {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+}
+
+/* Terminal Glitch Effects */
+@keyframes terminal-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes terminal-static {
+  0% { filter: contrast(1) brightness(1); }
+  50% { filter: contrast(1.2) brightness(1.1); }
+  100% { filter: contrast(1) brightness(1); }
+}
+
+.animate-terminal-flicker {
+  animation: terminal-flicker 0.15s infinite;
+}
+
+.animate-terminal-static {
+  animation: terminal-static 0.1s infinite;
+}
+
+/* Code Streaming Effects */
+@keyframes code-stream {
+  0% { 
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 0;
+  }
+  10% { 
+    opacity: 1;
+  }
+  90% { 
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(100vh) rotate(5deg);
+    opacity: 0;
+  }
+}
+
+.animate-code-stream {
+  animation: code-stream 8s linear infinite;
+}
+
+/* Particle Effects */
+@keyframes particle-float {
+  0% { 
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% { 
+    transform: translate(0, -100px) scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-particle-float {
+  animation: particle-float 2s ease-out forwards;
+}
+
+/* System Boot Animations */
+@keyframes boot-progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+@keyframes boot-text {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+.animate-boot-progress {
+  animation: boot-progress 3s ease-out forwards;
+}
+
+.animate-boot-text {
+  animation: boot-text 0.5s ease-out forwards;
+}
+
+/* Enhanced Cursor Effects */
+@keyframes cursor-glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 1), 0 0 30px rgba(0, 0, 0, 0.8);
+  }
+}
+
+.animate-cursor-glow {
+  animation: cursor-glow 1s ease-in-out infinite;
+}
+
+/* Performance Optimizations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Responsive Animations */
+@media (max-width: 768px) {
+  .animate-glitch,
+  .animate-glitch-intense {
+    animation-duration: 0.2s;
+  }
+  
+  .animate-float,
+  .animate-float-delayed {
+    animation-duration: 4s;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-glitch,
+  .animate-glitch-subtle,
+  .animate-glitch-intense,
+  .animate-rgb-split-low,
+  .animate-rgb-split-medium,
+  .animate-rgb-split-high,
+  .animate-chromatic-base,
+  .animate-chromatic-red,
+  .animate-chromatic-blue,
+  .animate-scan-lines,
+  .animate-terminal-flicker,
+  .animate-terminal-static {
+    animation: none;
+  }
+  
+  .animate-float,
+  .animate-float-delayed,
+  .animate-pulse-slow {
+    animation-duration: 10s;
+  }
+}

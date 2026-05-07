@@ -571,74 +571,51 @@ export const BinaryRain = () => {
   );
 };
 
-// System Loading Animation
+// Simple KP Loading Animation with White Background
 export const SystemLoading = ({ onComplete, messages = [] }) => {
-  const [currentMessage, setCurrentMessage] = useState(0);
   const [progress, setProgress] = useState(0);
-
-  const defaultMessages = [
-    "Initializing neural networks...",
-    "Loading AI modules...",
-    "Establishing secure connections...",
-    "Compiling portfolio data...",
-    "Optimizing user experience...",
-    "System ready!"
-  ];
-
-  const loadingMessages = messages.length > 0 ? messages : defaultMessages;
-
-  useEffect(() => {
-    const messageInterval = setInterval(() => {
-      if (currentMessage < loadingMessages.length - 1) {
-        setCurrentMessage(prev => prev + 1);
-      } else {
-        clearInterval(messageInterval);
-        if (onComplete) {
-          setTimeout(onComplete, 1000);
-        }
-      }
-    }, 800);
-
-    return () => clearInterval(messageInterval);
-  }, [currentMessage, loadingMessages.length, onComplete]);
+  const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
     const progressInterval = setInterval(() => {
       setProgress(prev => {
-        const newProgress = prev + Math.random() * 15;
-        return newProgress >= 100 ? 100 : newProgress;
+        const newProgress = prev + 2;
+        if (newProgress >= 100) {
+          clearInterval(progressInterval);
+          setIsComplete(true);
+          setTimeout(() => {
+            if (onComplete) onComplete();
+          }, 500);
+          return 100;
+        }
+        return newProgress;
       });
-    }, 100);
+    }, 30);
 
     return () => clearInterval(progressInterval);
-  }, []);
+  }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 bg-black z-50 flex items-center justify-center font-mono text-white">
-      <div className="max-w-md w-full p-8">
-        <div className="mb-8 text-center">
-          <div className="text-2xl font-bold mb-4 animate-pulse">KPDEV SYSTEM</div>
-          <div className="text-sm text-gray-400">Booting portfolio interface...</div>
+    <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
+      <div className="text-center">
+        {/* KP Logo/Text */}
+        <div className="mb-8">
+          <h1 className="text-6xl font-bold text-black mb-2 animate-pulse">
+            KP
+          </h1>
+          <p className="text-gray-600 text-sm">Loading Portfolio...</p>
         </div>
         
-        <div className="space-y-4">
-          <div className="text-sm">
-            {loadingMessages.slice(0, currentMessage + 1).map((message, index) => (
-              <div key={index} className={`${index === currentMessage ? 'text-white' : 'text-gray-500'}`}>
-                <span className="text-green-400">root@kpdev:~$</span> {message}
-              </div>
-            ))}
-          </div>
-          
-          <div className="w-full bg-gray-800 rounded-full h-2">
+        {/* Progress Bar */}
+        <div className="w-64 mx-auto">
+          <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
             <div 
-              className="bg-white h-2 rounded-full transition-all duration-300"
+              className="bg-black h-1.5 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
-          
-          <div className="text-xs text-gray-400 text-center">
-            {Math.round(progress)}% Complete
+          <div className="text-xs text-gray-500 mt-2">
+            {progress}%
           </div>
         </div>
       </div>

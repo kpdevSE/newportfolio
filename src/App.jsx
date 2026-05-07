@@ -10,13 +10,14 @@ import Navigation from "./components/Components/Navigation";
 import Footer from "./components/Components/Footer";
 import FloatingSocialButtons from "./components/Components/FloatingSocialButtons";
 import ScrollToTopButton from "./components/Components/ScrollToTopButton";
+import SEOHelmet from "./components/SEO/SEOHelmet";
+import { getSEOData } from "./utils/seoConfig";
 
 // Import Advanced Hacker Animations
 import {
   MatrixRain,
   ParticleCursor,
   AnimatedGrid,
-  TerminalBootSequence,
   CodeStreaming,
   ScanLines,
   StaticNoise,
@@ -28,22 +29,42 @@ import {
 import "./components/animations/HackerAnimations.css";
 
 const App = () => {
-  const [showBootSequence, setShowBootSequence] = useState(true);
-  const [showSystemLoading, setShowSystemLoading] = useState(false);
+  const [showSystemLoading, setShowSystemLoading] = useState(true);
   const [isSystemReady, setIsSystemReady] = useState(false);
   const [backgroundEffect, setBackgroundEffect] = useState("matrix"); // matrix, binary, code, grid
-
-  // Handle boot sequence completion
-  const handleBootComplete = () => {
-    setShowBootSequence(false);
-    setShowSystemLoading(true);
-  };
+  const [activeSection, setActiveSection] = useState("home");
 
   // Handle system loading completion
   const handleSystemReady = () => {
     setShowSystemLoading(false);
     setIsSystemReady(true);
   };
+
+  // Track active section for SEO updates
+  useEffect(() => {
+    if (!isSystemReady) return;
+
+    const handleScroll = () => {
+      const sections = ['home', 'about', 'projects', 'skills', 'experience', 'education', 'contact'];
+      const scrollPosition = window.scrollY + 200;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isSystemReady]);
 
   // Cycle background effects every 30 seconds
   useEffect(() => {
@@ -80,24 +101,12 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
-      {/* Boot Sequence */}
-      {showBootSequence && (
-        <TerminalBootSequence onComplete={handleBootComplete} />
-      )}
+      {/* Dynamic SEO based on active section */}
+      <SEOHelmet {...getSEOData(activeSection)} />
 
-      {/* System Loading */}
+      {/* KP Loading Screen */}
       {showSystemLoading && (
-        <SystemLoading 
-          onComplete={handleSystemReady}
-          messages={[
-            "Initializing portfolio matrix...",
-            "Loading hacker theme modules...",
-            "Compiling animation engines...",
-            "Establishing secure connections...",
-            "Optimizing user experience...",
-            "System ready - Welcome to KPDEV!"
-          ]}
-        />
+        <SystemLoading onComplete={handleSystemReady} />
       )}
 
       {/* Main Application */}
@@ -119,25 +128,37 @@ const App = () => {
           <Navigation />
 
           {/* Hero Section */}
-          <HeroSection />
+          <section id="home">
+            <HeroSection />
+          </section>
 
           {/* About Section */}
           <AboutSection />
 
           {/* Projects Section */}
-          <FeaturedProjects />
+          <section id="projects">
+            <FeaturedProjects />
+          </section>
 
           {/* Skills Section */}
-          <SkillsSection />
+          <section id="skills">
+            <SkillsSection />
+          </section>
 
           {/* Experience Section */}
-          <ExperianceSection />
+          <section id="experience">
+            <ExperianceSection />
+          </section>
 
           {/* Education Section */}
-          <Education />
+          <section id="education">
+            <Education />
+          </section>
 
           {/* Contact Section */}
-          <ContactSection />
+          <section id="contact">
+            <ContactSection />
+          </section>
 
           {/* Footer */}
           <Footer />
